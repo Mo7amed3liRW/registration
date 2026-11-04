@@ -87,6 +87,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* hero */
 .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center;padding:26px 0 34px}
+.dl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 18px;padding:10px 14px;border:1px solid var(--or);border-radius:14px;background:rgba(255,122,26,.10);width:fit-content;max-width:100%}
+.dl-t{font-weight:700;color:var(--or-2);font-size:15px}
+.dl-c{font:600 15px var(--f-mono,monospace);color:var(--txt);letter-spacing:.5px}
 .tag{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--line-2);border-radius:999px;
   font-size:13px;color:var(--cyan);background:rgba(116,216,255,.06)}
 .tag i{width:7px;height:7px;border-radius:50%;background:var(--or);box-shadow:0 0 0 0 rgba(255,122,26,.7);animation:ping 2s infinite}
@@ -410,7 +413,8 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
     <div>
       <span class="tag"><i></i>دروس وكورسات هندسة لطلاب الجامعات</span>
       <h1>سجّل مع <span>المهندس محمد رواشده</span></h1>
-      <p class="lead">شرح مبسّط من الصفر، وحل أسئلة سنوات، ومتابعة مستمرة. اختر المادة، واختر نظام الحصص اللي بناسبك، فردي أو جماعي، أونلاين أو وجاهي.</p>
+      <p class="lead">شرح مبسّط وواضح، وحل أسئلة سنوات، ومتابعة مستمرة. اختر المادة، واختر نظام الحصص اللي بناسبك، فردي أو جماعي، أونلاين أو وجاهي.</p>
+      <div class="dl" id="dl" aria-live="off"><span class="dl-t">التسجيل مفتوح لغاية 15 كانون الأول</span><span class="dl-c" id="dlC" dir="ltr"></span></div>
       <div class="cta">
         <a class="btn" href="#reg" id="startBtn">ابدأ التسجيل <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
         <a class="btn ghost" id="waHero" href="#" target="_blank" rel="noopener">كلّمني على واتساب</a>
@@ -425,7 +429,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
   </section>
 
   <section class="sec perks" aria-label="شو بتحصل عليه">
-    <article class="perk rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H4zM8 20h8M12 16v4M8 9h8M8 12h5"/></svg><h3>شرح مفصّل ومبسّط</h3><p>كل شابتر بالتفصيل، من الصفر وبدون تعقيد.</p></article>
+    <article class="perk rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H4zM8 20h8M12 16v4M8 9h8M8 12h5"/></svg><h3>شرح مفصّل ومبسّط</h3><p>كل شابتر بالتفصيل، وبدون تعقيد.</p></article>
     <article class="perk rv" style="--d:.08s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h5"/></svg><h3>حلول أسئلة وسنوات</h3><p>تركيز على نمط أسئلة الامتحانات: first وsecond وfinal.</p></article>
     <article class="perk rv" style="--d:.16s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/></svg><h3>متابعة مستمرة</h3><p>جروب خاص للإجابة على كل استفساراتك.</p></article>
   </section>
@@ -3469,6 +3473,20 @@ function showTicket(p, r) {
 /* بداية */
 go(1, false);
 loadCounts();
+})();
+
+/* العد التنازلي للتسجيل: لغاية 15/12/2026 نهاية اليوم (توقيت الأردن UTC+3) */
+(function () {
+  const END = Date.parse('2026-12-15T23:59:59+03:00'), box = document.getElementById('dl'), c = document.getElementById('dlC');
+  if (!box || !c) return;
+  const p2 = n => String(n).padStart(2, '0');
+  function tick() {
+    const ms = END - Date.now();
+    if (ms <= 0) { box.querySelector('.dl-t').textContent = 'انتهى موعد التسجيل'; c.textContent = ''; return false; }
+    const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4), s = Math.floor(ms % 6e4 / 1e3);
+    c.textContent = `${d}d ${p2(h)}:${p2(m)}:${p2(s)}`; return true;
+  }
+  if (tick()) { const iv = setInterval(() => { if (!tick()) clearInterval(iv); }, 1000); }
 })();
 </script>
 </body>
