@@ -225,6 +225,7 @@ h1 span::after{content:"";position:absolute;inset-inline:0;bottom:-6px;height:3p
 .mrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;margin-bottom:10px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035)}
 .mrow.bad{border-color:var(--bad,#ff5d6c)}
 .mrow .mn b{display:block;font-weight:600;font-size:16px}.mrow .mn em{display:block;font:400 11.5px var(--f-mono);font-style:normal;color:var(--mut)}
+.sg{display:flex;flex-direction:column;gap:5px}.sg small{font-size:12px;color:var(--mut);font-weight:600}
 .seg{display:flex;gap:6px}
 .seg button{padding:8px 16px;border-radius:10px;border:1px solid var(--line-2);background:transparent;color:var(--txt,#E8F0FF);font:600 14.5px var(--f-body,inherit);cursor:pointer;transition:.2s}
 .seg button:hover{border-color:var(--cyan)}
@@ -373,7 +374,8 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
 @media (max-width:560px){
   .wrap{padding-inline:14px}
   .grid{grid-template-columns:1fr}
-  .seg{width:100%}.seg button{flex:1}
+  .mrow{flex-direction:column;align-items:stretch;gap:10px}.mrow .sg{width:100%}
+  .seg{width:100%}.seg button{flex:1;padding:10px 8px;font-size:15px;min-height:44px}
   .row3{grid-template-columns:1fr}
   .gauge{grid-template-columns:1fr}
   .stats{grid-template-columns:1fr 1fr 1fr}
@@ -3155,14 +3157,14 @@ function renderModes() {
   $('#modeList').innerHTML = items.map(it => `
     <div class="mrow" data-id="${it.id}">
       <span class="mn"><b>${esc(it.ar)}</b><em dir="ltr">${esc(it.en)}</em></span>
-      <span class="seg" role="group" aria-label="نظام ${esc(it.ar)}">
+      <span class="sg"><small>نوع الحصة</small><span class="seg" role="group" aria-label="نظام ${esc(it.ar)}">
         <button type="button" data-m="individual" aria-pressed="${st.modes[it.id] === 'individual'}">فردي</button>
         <button type="button" data-m="group" aria-pressed="${st.modes[it.id] === 'group'}">جماعي</button>
-      </span>
-      <span class="seg" role="group" aria-label="مكان ${esc(it.ar)}">
+      </span></span>
+      <span class="sg"><small>مكان الحصة</small><span class="seg" role="group" aria-label="مكان ${esc(it.ar)}">
         <button type="button" data-p="online" aria-pressed="${st.places[it.id] === 'online'}">أونلاين</button>
         <button type="button" data-p="onsite" aria-pressed="${st.places[it.id] === 'onsite'}">وجاهي</button>
-      </span>
+      </span></span>
     </div>`).join('');
 }
 $('#modeList').addEventListener('click', e => {
