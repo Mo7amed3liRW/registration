@@ -3430,7 +3430,7 @@ function qrPng(q, r, p) {
   return c;
 }
 function showTicket(p, r) {
-  const text = ticketText(p, r), q = makeQR(text), done = $('#done');
+  const text = ticketText(p, r), qrMsg = `طلب تسجيل ${r.id}\nالاسم: ${p.name}\nالخصم: ${r.discount}%\nرمز التحقق: ${r.sig}`, q = makeQR(waLink(qrMsg)), done = $('#done');
   $('#f').hidden = true; done.hidden = false; $('#bubble').closest('.guide');
   $$('#rail li').forEach(li => { li.classList.remove('on'); li.classList.add('done'); li.querySelector('i').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.200" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg>'; });
   $('#shNow').textContent = '4';
@@ -3445,7 +3445,7 @@ function showTicket(p, r) {
         <p style="margin:0;color:#C9D8F2">${basis}</p>
         <div class="within"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>سيتم التواصل مع الطالب/الطالبة خلال أقل من 24 ساعة.</span></div>
         <div class="tb" id="doneTb"></div>
-        <p class="warn">احتفظ برمز QR، فهو يحتوي كل معلومات طلبك وإثبات الخصم. خذ لقطة شاشة أو احفظه كصورة.</p>
+        <p class="warn">احتفظ برمز QR: عند مسحه بالكاميرا يفتح واتساب برسالة جاهزة فيها رقم طلبك ورمز التحقق. خذ لقطة شاشة أو احفظه كصورة.</p>
         <div class="acts">
           <button type="button" class="btn" id="saveQr">حفظ الرمز كصورة</button>
           <a class="btn ghost" href="${waLink(text)}" target="_blank" rel="noopener">أرسل الطلب على واتساب</a>
