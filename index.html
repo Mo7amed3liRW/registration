@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تسجيل دورات وحصص المهندس محمد رواشده</title>
-<meta name="description" content="سجّل بدورات وحصص هندسة لطلاب الجامعات مع المهندس محمد رواشده، فردي أو جماعي، وخصم يصل إلى 20% عند تسجيل أصدقائك معك.">
+<meta name="description" content="سجّل بدورات وحصص هندسة لطلاب الجامعات مع المهندس محمد رواشده، فردي أو جماعي، أونلاين أو وجاهي، وخصم يصل إلى 20% عند تسجيل أصدقائك معك.">
 <meta name="theme-color" content="#06112B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -410,7 +410,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
     <div>
       <span class="tag"><i></i>دروس وكورسات هندسة لطلاب الجامعات</span>
       <h1>سجّل مع <span>المهندس محمد رواشده</span></h1>
-      <p class="lead">شرح مبسّط من الصفر، وحل أسئلة سنوات، ومتابعة مستمرة. اختر المادة، واختر نظام الحصص اللي بناسبك، فردي أو جماعي.</p>
+      <p class="lead">شرح مبسّط من الصفر، وحل أسئلة سنوات، ومتابعة مستمرة. اختر المادة، واختر نظام الحصص اللي بناسبك، فردي أو جماعي، أونلاين أو وجاهي.</p>
       <div class="cta">
         <a class="btn" href="#reg" id="startBtn">ابدأ التسجيل <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
         <a class="btn ghost" id="waHero" href="#" target="_blank" rel="noopener">كلّمني على واتساب</a>
@@ -418,7 +418,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
       <div class="stats">
         <div class="stat"><b dir="ltr">3+</b><span>سنوات خبرة بالتدريس</span></div>
         <div class="stat"><b dir="ltr">85–100%</b><span>نتائج طلابي دائماً ضمن هذا المدى</span></div>
-        <div class="stat"><b>فردي وجماعي</b><span>نظامان للحصص</span></div>
+        <div class="stat"><b>أونلاين ووجاهي</b><span>فردي أو جماعي</span></div>
       </div>
     </div>
     <div class="av-wrap"><div class="av" id="heroAv"></div></div>
@@ -473,7 +473,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
           <!-- step 1 -->
           <section class="step" data-step="1">
             <h2 tabindex="-1">شو بدك تدرس؟</h2>
-            <p class="sub">اختر مادة أو أكثر، وبعدها حدد لكل مادة فردي أو جماعي.</p>
+            <p class="sub">اختر مادة أو أكثر، وبعدها حدد لكل مادة فردي أو جماعي، وأونلاين أو وجاهي.</p>
             <div class="sec-title">المواد</div>
             <div class="cfilter">
               <input class="inp" id="cSearch" type="search" placeholder="ابحث عن مادة بالعربي أو الإنجليزي" autocomplete="off">
@@ -486,7 +486,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
                 <input class="inp" id="otherTxt" maxlength="60" placeholder="اكتب اسم المادة"></div>
             </div>
             <p class="err" id="eCourses" hidden></p>
-            <div id="modeBox" hidden><div class="sec-title">نظام الحصص لكل مادة</div><p class="sub" style="margin:-4px 0 12px">اختر لكل مادة إذا بدك حصص فردية أو جماعية.</p><div id="modeList"></div></div>
+            <div id="modeBox" hidden><div class="sec-title">نظام الحصص ومكانها لكل مادة</div><p class="sub" style="margin:-4px 0 12px">اختر لكل مادة إذا بدك حصص فردية أو جماعية، وأونلاين أو وجاهي.</p><div id="modeList"></div></div>
             <p class="err" id="eMode" hidden></p>
             <div class="nav"><span></span><button type="button" class="btn" data-next>التالي <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button></div>
           </section>
@@ -3082,7 +3082,7 @@ function tick() {
 }
 
 /* =================== الحالة =================== */
-const st = { step: 1, courses: new Set(), otherOn: false, modes: {}, friends: [], counts: {}, busy: false };
+const st = { step: 1, courses: new Set(), otherOn: false, modes: {}, places: {}, friends: [], counts: {}, busy: false };
 let fid = 0, lastValid = 0;
 
 /* المواد */
@@ -3145,13 +3145,18 @@ function renderModes() {
         <button type="button" data-m="individual" aria-pressed="${st.modes[it.id] === 'individual'}">فردي</button>
         <button type="button" data-m="group" aria-pressed="${st.modes[it.id] === 'group'}">جماعي</button>
       </span>
+      <span class="seg" role="group" aria-label="مكان ${esc(it.ar)}">
+        <button type="button" data-p="online" aria-pressed="${st.places[it.id] === 'online'}">أونلاين</button>
+        <button type="button" data-p="onsite" aria-pressed="${st.places[it.id] === 'onsite'}">وجاهي</button>
+      </span>
     </div>`).join('');
 }
 $('#modeList').addEventListener('click', e => {
   const b = e.target.closest('.seg button'); if (!b) return;
-  const row = b.closest('.mrow'); st.modes[row.dataset.id] = b.dataset.m;
+  const row = b.closest('.mrow'), seg = b.closest('.seg');
+  if (b.dataset.m) st.modes[row.dataset.id] = b.dataset.m; else st.places[row.dataset.id] = b.dataset.p;
   row.classList.remove('bad');
-  $$('button', row).forEach(x => x.setAttribute('aria-pressed', x === b));
+  $$('button', seg).forEach(x => x.setAttribute('aria-pressed', x === b));
   hideErr('#eMode');
 });
 $('#otherTxt').addEventListener('input', () => { const n = $('#modeList .mrow[data-id="other"] .mn b'); if (n) n.textContent = $('#otherTxt').value.trim() || 'مادة ثانية'; });
@@ -3316,8 +3321,8 @@ function check1() {
   const hasOther = st.otherOn && $('#otherTxt').value.trim().length >= 2;
   if (st.otherOn && !hasOther && !st.courses.size) { $('#fOther').classList.add('bad'); }
   if (!st.courses.size && !hasOther) { showErr('#eCourses', 'اختر مادة وحدة على الأقل.'); ok = false; }
-  const miss = modeItems().filter(it => !st.modes[it.id] && (it.id !== 'other' || hasOther));
-  if (miss.length) { miss.forEach(it => $(`.mrow[data-id="${it.id}"]`).classList.add('bad')); showErr('#eMode', 'حدد فردي أو جماعي لكل مادة اخترتها.'); ok = false; }
+  const miss = modeItems().filter(it => (!st.modes[it.id] || !st.places[it.id]) && (it.id !== 'other' || hasOther));
+  if (miss.length) { miss.forEach(it => $(`.mrow[data-id="${it.id}"]`).classList.add('bad')); showErr('#eMode', 'حدد فردي أو جماعي، وأونلاين أو وجاهي، لكل مادة اخترتها.'); ok = false; }
   if (!ok) { const first = $('.err:not([hidden])'); first && first.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
   return ok;
 }
@@ -3355,13 +3360,13 @@ $('#f').addEventListener('keydown', e => {
 
 /* =================== المراجعة والإرسال =================== */
 const fCourses = (f, p) => [...f.courses, f.other ? p.other : ''].filter(Boolean).join('، ');
-const MODE_AR = { individual: 'فردي', group: 'جماعي' };
-const courseTxt = p => [...p.courses.map(c => `${c.name} (${MODE_AR[c.mode]})`), p.other ? `${p.other} (${MODE_AR[p.otherMode]})` : ''].filter(Boolean);
+const MODE_AR = { individual: 'فردي', group: 'جماعي' }, PLACE_AR = { online: 'أونلاين', onsite: 'وجاهي' };
+const courseTxt = p => [...p.courses.map(c => `${c.name} (${MODE_AR[c.mode]} · ${PLACE_AR[c.place]})`), p.other ? `${p.other} (${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]})` : ''].filter(Boolean);
 function collect() {
   const other = st.otherOn ? $('#otherTxt').value.trim() : '';
   return {
     name: $('#name').value.trim(), phone: cleanPhone($('#phone').value), major: $('#major').value.trim(),
-    courses: COURSES.filter(c => st.courses.has(c.id)).map(c => ({ name: c.en, mode: st.modes[c.id] })), other, otherMode: other ? st.modes.other : '',
+    courses: COURSES.filter(c => st.courses.has(c.id)).map(c => ({ name: c.en, mode: st.modes[c.id], place: st.places[c.id] })), other, otherMode: other ? st.modes.other : '', otherPlace: other ? st.places.other : '',
     friends: st.friends.filter(f => f.ok).map(f => ({ name: f.name.trim(), phone: cleanPhone(f.phone), major: f.major.trim(),
       courses: COURSES.filter(c => f.items.includes(c.id)).map(c => c.en), other: f.items.includes('other') })),
     website: $('#hp').value, elapsed: Date.now() - T0
@@ -3369,7 +3374,7 @@ function collect() {
 }
 function renderReview() {
   const p = collect(), d = CONFIG.LADDER[p.friends.length];
-  const subj = [...COURSES.filter(c => st.courses.has(c.id)).map(c => `<span class="ch">${c.ar} · <span class="ltr">${c.en}</span> · <b>${MODE_AR[st.modes[c.id]]}</b></span>`), p.other ? `<span class="ch">${esc(p.other)} · <b>${MODE_AR[p.otherMode]}</b></span>` : ''].join('');
+  const subj = [...COURSES.filter(c => st.courses.has(c.id)).map(c => `<span class="ch">${c.ar} · <span class="ltr">${c.en}</span> · <b>${MODE_AR[st.modes[c.id]]} · ${PLACE_AR[st.places[c.id]]}</b></span>`), p.other ? `<span class="ch">${esc(p.other)} · <b>${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]}</b></span>` : ''].join('');
   const fr = p.friends.length ? `<ul>${p.friends.map((f, i) => `<li>${i + 1}. ${esc(f.name)} · <span class="ltr">${esc(f.phone)}</span> · ${esc(f.major)}<br><small>المواد: ${esc(fCourses(f, p))}</small></li>`).join('')}</ul>` : 'بدون أصدقاء';
   $('#review').innerHTML = `
     <div class="r"><div class="k">الاسم</div><div class="v">${esc(p.name)}</div></div>
