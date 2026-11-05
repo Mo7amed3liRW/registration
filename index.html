@@ -227,6 +227,10 @@ h1 span::after{content:"";position:absolute;inset-inline:0;bottom:-6px;height:3p
 .mrow .mn b{display:block;font-weight:600;font-size:16px}.mrow .mn em{display:block;font:400 11.5px var(--f-mono);font-style:normal;color:var(--mut)}
 .sg{display:flex;flex-direction:column;gap:5px}.sg small{font-size:12px;color:var(--mut);font-weight:600}
 .seg{display:flex;gap:6px}
+.seg.prog{flex-wrap:wrap}.seg.prog button{position:relative}
+.sg.wide{flex-basis:100%}
+.new{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.02em;margin-inline-start:6px;padding:1px 6px;border-radius:6px;background:var(--or);color:#1a0d00;vertical-align:middle;display:inline-block;transform:rotate(-4deg)}
+.new.def{background:#7b8799;color:#0b1220;transform:none}
 .seg button{padding:8px 16px;border-radius:10px;border:1px solid var(--line-2);background:transparent;color:var(--txt,#E8F0FF);font:600 14.5px var(--f-body,inherit);cursor:pointer;transition:.2s}
 .seg button:hover{border-color:var(--cyan)}
 .seg button[aria-pressed="true"]{border-color:var(--or);background:rgba(255,122,26,.14);color:var(--or)}
@@ -376,6 +380,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
   .grid{grid-template-columns:1fr}
   .mrow{flex-direction:column;align-items:stretch;gap:10px}.mrow .sg{width:100%}
   .seg{width:100%}.seg button{flex:1;padding:10px 8px;font-size:15px;min-height:44px}
+  .seg.prog button{flex:1 1 calc(50% - 6px)}
   .row3{grid-template-columns:1fr}
   .gauge{grid-template-columns:1fr}
   .stats{grid-template-columns:1fr 1fr 1fr}
@@ -497,7 +502,7 @@ footer .num{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-si
                 <input class="inp" id="otherTxt" maxlength="60" placeholder="اكتب اسم المادة"></div>
             </div>
             <p class="err" id="eCourses" hidden></p>
-            <div id="modeBox" hidden><div class="sec-title">نظام الحصص ومكانها لكل مادة</div><p class="sub" style="margin:-4px 0 12px">اختر لكل مادة إذا بدك حصص فردية أو جماعية، وأونلاين أو وجاهي.</p><div id="modeList"></div></div>
+            <div id="modeBox" hidden><div class="sec-title">نظام الحصص ومكانها ونوع البرنامج لكل مادة</div><p class="sub" style="margin:-4px 0 12px">اختر لكل مادة إذا بدك حصص فردية أو جماعية، وأونلاين أو وجاهي، وإذا بدك حصص دورية أو مراجعة أو مكثف أو حصة تجريبية.</p><div id="modeList"></div></div>
             <p class="err" id="eMode" hidden></p>
             <div class="nav"><span></span><button type="button" class="btn" data-next>التالي <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button></div>
           </section>
@@ -3098,7 +3103,7 @@ function tick() {
 }
 
 /* =================== الحالة =================== */
-const st = { step: 1, courses: new Set(), otherOn: false, modes: {}, places: {}, friends: [], counts: {}, busy: false };
+const st = { step: 1, courses: new Set(), otherOn: false, modes: {}, places: {}, progs: {}, friends: [], counts: {}, busy: false };
 let fid = 0, lastValid = 0;
 
 /* المواد */
@@ -3151,9 +3156,11 @@ function modeItems() {
   if (st.otherOn) a.push({ id: 'other', ar: $('#otherTxt').value.trim() || 'مادة ثانية', en: 'Other' });
   return a;
 }
+const PROGS = [['regular', 'حصص دورية', 'def'], ['review', 'مراجعة'], ['intensive', 'مكثف'], ['trial', 'حصة تجريبية', 'new']];
 function renderModes() {
   const items = modeItems(); if (typeof syncFriends === 'function') syncFriends();
   $('#modeBox').hidden = !items.length;
+  items.forEach(it => { if (!st.progs[it.id]) st.progs[it.id] = 'regular'; });
   $('#modeList').innerHTML = items.map(it => `
     <div class="mrow" data-id="${it.id}">
       <span class="mn"><b>${esc(it.ar)}</b><em dir="ltr">${esc(it.en)}</em></span>
@@ -3165,12 +3172,15 @@ function renderModes() {
         <button type="button" data-p="online" aria-pressed="${st.places[it.id] === 'online'}">أونلاين</button>
         <button type="button" data-p="onsite" aria-pressed="${st.places[it.id] === 'onsite'}">وجاهي</button>
       </span></span>
+      <span class="sg wide"><small>نوع البرنامج</small><span class="seg prog" role="group" aria-label="برنامج ${esc(it.ar)}">
+        ${PROGS.map(([k, t, isNew]) => `<button type="button" data-g="${k}" aria-pressed="${st.progs[it.id] === k}">${t}${isNew === 'new' ? '<i class="new">جديد</i>' : isNew === 'def' ? '<i class="new def">افتراضي</i>' : ''}</button>`).join('')}
+      </span></span>
     </div>`).join('');
 }
 $('#modeList').addEventListener('click', e => {
   const b = e.target.closest('.seg button'); if (!b) return;
   const row = b.closest('.mrow'), seg = b.closest('.seg');
-  if (b.dataset.m) st.modes[row.dataset.id] = b.dataset.m; else st.places[row.dataset.id] = b.dataset.p;
+  if (b.dataset.m) st.modes[row.dataset.id] = b.dataset.m; else if (b.dataset.g) st.progs[row.dataset.id] = b.dataset.g; else st.places[row.dataset.id] = b.dataset.p;
   row.classList.remove('bad');
   $$('button', seg).forEach(x => x.setAttribute('aria-pressed', x === b));
   hideErr('#eMode');
@@ -3376,13 +3386,13 @@ $('#f').addEventListener('keydown', e => {
 
 /* =================== المراجعة والإرسال =================== */
 const fCourses = (f, p) => [...f.courses, f.other ? p.other : ''].filter(Boolean).join('، ');
-const MODE_AR = { individual: 'فردي', group: 'جماعي' }, PLACE_AR = { online: 'أونلاين', onsite: 'وجاهي' };
-const courseTxt = p => [...p.courses.map(c => `${c.name} (${MODE_AR[c.mode]} · ${PLACE_AR[c.place]})`), p.other ? `${p.other} (${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]})` : ''].filter(Boolean);
+const MODE_AR = { individual: 'فردي', group: 'جماعي' }, PLACE_AR = { online: 'أونلاين', onsite: 'وجاهي' }, PROG_AR = { regular: 'حصص دورية', review: 'مراجعة', intensive: 'مكثف', trial: 'حصة تجريبية' };
+const courseTxt = p => [...p.courses.map(c => `${c.name} (${MODE_AR[c.mode]} · ${PLACE_AR[c.place]} · ${PROG_AR[c.program] || PROG_AR.regular})`), p.other ? `${p.other} (${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]} · ${PROG_AR[p.otherProgram] || PROG_AR.regular})` : ''].filter(Boolean);
 function collect() {
   const other = st.otherOn ? $('#otherTxt').value.trim() : '';
   return {
     name: $('#name').value.trim(), phone: cleanPhone($('#phone').value), major: $('#major').value.trim(),
-    courses: COURSES.filter(c => st.courses.has(c.id)).map(c => ({ name: c.en, mode: st.modes[c.id], place: st.places[c.id] })), other, otherMode: other ? st.modes.other : '', otherPlace: other ? st.places.other : '',
+    courses: COURSES.filter(c => st.courses.has(c.id)).map(c => ({ name: c.en, mode: st.modes[c.id], place: st.places[c.id], program: st.progs[c.id] || 'regular' })), other, otherMode: other ? st.modes.other : '', otherPlace: other ? st.places.other : '', otherProgram: other ? (st.progs.other || 'regular') : '',
     friends: st.friends.filter(f => f.ok).map(f => ({ name: f.name.trim(), phone: cleanPhone(f.phone), major: f.major.trim(),
       courses: COURSES.filter(c => f.items.includes(c.id)).map(c => c.en), other: f.items.includes('other') })),
     website: $('#hp').value, elapsed: Date.now() - T0
@@ -3390,7 +3400,7 @@ function collect() {
 }
 function renderReview() {
   const p = collect(), d = CONFIG.LADDER[p.friends.length];
-  const subj = [...COURSES.filter(c => st.courses.has(c.id)).map(c => `<span class="ch">${c.ar} · <span class="ltr">${c.en}</span> · <b>${MODE_AR[st.modes[c.id]]} · ${PLACE_AR[st.places[c.id]]}</b></span>`), p.other ? `<span class="ch">${esc(p.other)} · <b>${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]}</b></span>` : ''].join('');
+  const subj = [...COURSES.filter(c => st.courses.has(c.id)).map(c => `<span class="ch">${c.ar} · <span class="ltr">${c.en}</span> · <b>${MODE_AR[st.modes[c.id]]} · ${PLACE_AR[st.places[c.id]]} · ${PROG_AR[st.progs[c.id]] || PROG_AR.regular}</b></span>`), p.other ? `<span class="ch">${esc(p.other)} · <b>${MODE_AR[p.otherMode]} · ${PLACE_AR[p.otherPlace]}</b></span>` : ''].join('');
   const fr = p.friends.length ? `<ul>${p.friends.map((f, i) => `<li>${i + 1}. ${esc(f.name)} · <span class="ltr">${esc(f.phone)}</span> · ${esc(f.major)}<br><small>المواد: ${esc(fCourses(f, p))}</small></li>`).join('')}</ul>` : 'بدون أصدقاء';
   $('#review').innerHTML = `
     <div class="r"><div class="k">الاسم</div><div class="v">${esc(p.name)}</div></div>
